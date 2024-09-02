@@ -1,10 +1,12 @@
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class Main {
+
     public static void main(String[] args) {
-        String fileName = "sample.txt";
+        String fileName = "../sample.txt";
         int sum = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
