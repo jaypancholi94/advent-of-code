@@ -63,7 +63,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println("Total sum: " + totalSum);  // Output should be 281
+        System.out.println("Total sum: " + totalSum);
     }
 
 }
