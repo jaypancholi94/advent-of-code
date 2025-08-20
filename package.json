@@ -1,0 +1,15 @@
+{
+  "name": "advent-of-code",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "day": "bun scripts/run-day.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.3.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
