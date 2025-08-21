@@ -1,10 +1,10 @@
-export const INC = "increasing";
-export const DEC = "decreasing";
-export const NOT_SORTED = "not sorted";
+export const INC = 'increasing';
+export const DEC = 'decreasing';
+export const NOT_SORTED = 'not sorted';
 
 export const getNuclearData = (input: string): number[][] => {
   const data: number[][] = [];
-  const reports = input.trim().split("\n");
+  const reports = input.trim().split('\n');
   for (const report of reports) {
     const row = report.trim().split(/\s+/).map(Number);
     data.push(row);
@@ -15,7 +15,7 @@ export const getNuclearData = (input: string): number[][] => {
 export const validateReport = (reports: Array<number>): boolean => {
   let inc = true;
   let dec = true;
-  let adjacentStatus = checkAdjacent(reports);
+  const adjacentStatus = checkAdjacent(reports);
 
   for (let i = 1; i < reports.length; i++) {
     const current = reports[i]!;
@@ -30,7 +30,7 @@ export const validateReport = (reports: Array<number>): boolean => {
 };
 
 export const checkAdjacent = (report: Array<number>) => {
-  let isSafe = true;
+  const isSafe = true;
   for (let i = 1; i < report.length; i++) {
     if (![1, 2, 3].includes(Math.abs(report[i]! - report[i - 1]!))) {
       return false;

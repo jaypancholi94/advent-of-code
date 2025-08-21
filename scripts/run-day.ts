@@ -1,17 +1,17 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { pathToFileURL } from "node:url";
-import { performance } from "node:perf_hooks";
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { performance } from 'node:perf_hooks';
 
 function pad2(value: string | number): string {
-  return String(value).padStart(2, "0");
+  return String(value).padStart(2, '0');
 }
 
 type ParsedArgs = { day: string; year: string; part?: number };
 
 function parseArgs(argv: Array<string>): ParsedArgs {
   const now = new Date();
-  let day = "";
+  let day = '';
   let year = String(now.getFullYear());
   let part: number | undefined;
 
@@ -19,10 +19,10 @@ function parseArgs(argv: Array<string>): ParsedArgs {
     const arg = argv[i];
     if (!arg) continue;
 
-    if (arg === "--year" || arg === "-y") {
+    if (arg === '--year' || arg === '-y') {
       const next = argv[i + 1];
       if (!next) {
-        console.error("❗ Missing value for --year");
+        console.error('❗ Missing value for --year');
         process.exit(1);
       }
       year = next;
@@ -30,20 +30,20 @@ function parseArgs(argv: Array<string>): ParsedArgs {
       continue;
     }
 
-    if (arg.startsWith("--year=")) {
-      year = arg.slice("--year=".length);
+    if (arg.startsWith('--year=')) {
+      year = arg.slice('--year='.length);
       continue;
     }
 
-    if (arg === "--part" || arg === "-p") {
+    if (arg === '--part' || arg === '-p') {
       const next = argv[i + 1];
       if (!next) {
-        console.error("❗ Missing value for --part");
+        console.error('❗ Missing value for --part');
         process.exit(1);
       }
       const parsedPart = parseInt(next, 10);
       if (isNaN(parsedPart) || parsedPart < 1 || parsedPart > 2) {
-        console.error("❗ Part must be 1 or 2");
+        console.error('❗ Part must be 1 or 2');
         process.exit(1);
       }
       part = parsedPart;
@@ -51,10 +51,10 @@ function parseArgs(argv: Array<string>): ParsedArgs {
       continue;
     }
 
-    if (arg.startsWith("--part=")) {
-      const parsedPart = parseInt(arg.slice("--part=".length), 10);
+    if (arg.startsWith('--part=')) {
+      const parsedPart = parseInt(arg.slice('--part='.length), 10);
       if (isNaN(parsedPart) || parsedPart < 1 || parsedPart > 2) {
-        console.error("❗ Part must be 1 or 2");
+        console.error('❗ Part must be 1 or 2');
         process.exit(1);
       }
       part = parsedPart;
@@ -62,13 +62,13 @@ function parseArgs(argv: Array<string>): ParsedArgs {
     }
 
     // first non-flag becomes <day>
-    if (day === "") day = arg;
+    if (day === '') day = arg;
   }
 
-  return { day, year, part };
+  return { day, year, ...(part !== undefined && { part }) };
 }
 
-function resolveDayEntry(year: string, day: string, part: number = 1): string {
+function resolveDayEntry(year: string, day: string, part = 1): string {
   const dayDir = `day-${pad2(day)}`;
   const fileName = `part-${String(part)}.ts`;
   return join(process.cwd(), year, dayDir, fileName);
@@ -78,7 +78,7 @@ async function main(): Promise<void> {
   const { day, year, part = 1 } = parseArgs(process.argv);
 
   if (!day) {
-    console.error("Usage: bun run day <day-number> [--year 2024]");
+    console.error('Usage: bun run day <day-number> [--year 2024]');
     process.exit(1);
   }
 
@@ -94,7 +94,7 @@ async function main(): Promise<void> {
     // Dynamic import executes top-level code of the day's module
     await import(pathToFileURL(entry).href);
   } catch (error) {
-    console.error("💥 Failed to execute day script:", error);
+    console.error('💥 Failed to execute day script:', error);
     process.exit(1);
   }
   const elapsed = Math.round(performance.now() - start);

@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 function processInput(input: string): number {
   // Initialize two arrays for left and right numbers
@@ -10,12 +10,12 @@ function processInput(input: string): number {
   // const compareNumber = (a: number, b: number) => a - b;
 
   // Parse the content and populate the arrays
-  const lines = input.trim().split("\n");
+  const lines = input.trim().split('\n');
   for (const line of lines) {
     const [left, right] = line.trim().split(/\s+/).map(Number);
     if (
-      typeof left === "number" &&
-      typeof right === "number" &&
+      typeof left === 'number' &&
+      typeof right === 'number' &&
       !isNaN(left) &&
       !isNaN(right)
     ) {
@@ -38,22 +38,22 @@ function processInput(input: string): number {
     0
   );
 
-  console.log("Left Array:", leftArray);
-  console.log("Right Array:", rightArray);
-  console.log("Similarity Score Array:", similarityScoreArray);
+  console.log('Left Array:', leftArray);
+  console.log('Right Array:', rightArray);
+  console.log('Similarity Score Array:', similarityScoreArray);
 
   return totalSimilarityScore;
 }
 
 function main() {
   const input = readFileSync(
-    join(__dirname, "dataset", "sample-2.txt"),
-    "utf-8"
+    join(__dirname, 'dataset', 'sample-2.txt'),
+    'utf-8'
   ).trim();
 
   const result = processInput(input);
 
-  console.log("Similarity Score:", result);
+  console.log('Similarity Score:', result);
 }
 
 main();
