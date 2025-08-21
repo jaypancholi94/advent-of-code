@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "day": "bun scripts/run-day.ts",
+    "day:watch": "bun --watch scripts/run-day.ts --watch",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",

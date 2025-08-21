@@ -19,6 +19,9 @@ function parseArgs(argv: Array<string>): ParsedArgs {
     const arg = argv[i];
     if (!arg) continue;
 
+    // Skip the --watch flag as it's handled separately
+    if (arg === '--watch') continue;
+
     if (arg === '--year' || arg === '-y') {
       const next = argv[i + 1];
       if (!next) {
@@ -75,33 +78,44 @@ function resolveDayEntry(year: string, day: string, part = 1): string {
 }
 
 async function main(): Promise<void> {
+  const isWatchMode = process.argv.includes('--watch');
   const { day, year, part = 1 } = parseArgs(process.argv);
 
   if (!day) {
     console.error('Usage: bun run day <day-number> [--year 2024]');
-    process.exit(1);
+    if (!isWatchMode) process.exit(1);
+    return;
   }
 
   const entry = resolveDayEntry(year, day, part);
 
   if (!existsSync(entry)) {
     console.error(`❗ Not found: ${entry}`);
-    process.exit(1);
+    if (!isWatchMode) process.exit(1);
+    return;
   }
 
   const start = performance.now();
   try {
+    // Clear the require cache in watch mode to ensure fresh imports
+    if (isWatchMode) {
+      console.clear();
+      console.log('🔄 Running in watch mode...\n');
+    }
+
     // Dynamic import executes top-level code of the day's module
-    await import(pathToFileURL(entry).href);
+    await import(pathToFileURL(entry).href + '?update=' + Date.now());
+
+    const elapsed = Math.round(performance.now() - start);
+    console.log(`\n✨ Advent of Code ${year} ✨`);
+    console.log(
+      `└── 🎄 Day ${pad2(day)} | Part ${part} completed in ${elapsed}ms 🚀\n`
+    );
   } catch (error) {
     console.error('💥 Failed to execute day script:', error);
-    process.exit(1);
+    if (!isWatchMode) process.exit(1);
+    console.log('\n👀 Watching for changes...\n');
   }
-  const elapsed = Math.round(performance.now() - start);
-  console.log(`\n✨ Advent of Code ${year} ✨`);
-  console.log(
-    `└── 🎄 Day ${pad2(day)} | Part ${part} completed in ${elapsed}ms 🚀\n`
-  );
 }
 
 await main();
