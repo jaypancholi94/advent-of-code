@@ -86,6 +86,17 @@ bun run check                  # Run typecheck + lint + format check
 bun run fix                   # Run lint:fix + format
 ```
 
+## 📝 VS Code Snippets
+
+This project includes custom VS Code snippets to speed up development. See [SNIPPETS.md](SNIPPETS.md) for detailed documentation.
+
+**Quick reference:**
+
+- `aoc-solution` - Basic solution template
+- `aoc-util` - Solution with utility imports
+- `aoc-validate` - Validation loop pattern
+- `aoc-file` - File reading snippet
+
 ## 🏗️ Adding New Solutions
 
 ### For TypeScript solutions (2024+)
