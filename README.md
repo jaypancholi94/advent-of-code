@@ -64,6 +64,28 @@ bun run day 3 -y 2023 -p 2      # Run day 3, part 2 for 2023
 - `-y, --year <year>`: Specify the year (defaults to current year)
 - `-p, --part <1|2>`: Specify which part to run (defaults to 1)
 
+## 🔧 Development Tools
+
+### Code Quality & Formatting
+
+```bash
+# Type checking
+bun run typecheck              # Check TypeScript types
+bun run typecheck:watch        # Watch mode for type checking
+
+# Linting
+bun run lint                   # Check code with ESLint
+bun run lint:fix              # Auto-fix ESLint issues
+
+# Formatting
+bun run format                 # Format code with Prettier
+bun run format:check          # Check if code is formatted
+
+# All-in-one checks
+bun run check                  # Run typecheck + lint + format check
+bun run fix                   # Run lint:fix + format
+```
+
 ## 🏗️ Adding New Solutions
 
 ### For TypeScript solutions (2024+)
@@ -90,6 +112,10 @@ bun run day 3 -y 2023 -p 2      # Run day 3, part 2 for 2023
 - **Organized structure**: Clear separation by year and day
 - **Sample data support**: Easy testing with provided examples
 - **CLI runner**: Simple command-line interface for running solutions
+- **Code quality tools**: ESLint for linting, Prettier for formatting
+- **Type safety**: Strict TypeScript configuration with comprehensive checks
+- **Development experience**: VS Code integration with recommended extensions
+- **Path mapping**: Clean imports using TypeScript path aliases
 
 ## 📊 Languages Used
 

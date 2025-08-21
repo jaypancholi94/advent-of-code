@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
@@ -14,15 +12,38 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-    // Best practices
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    // Type checking & strict mode
     "strict": true,
-    "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": false,
+    // Performance & diagnostics
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    // Development experience
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    // Path mapping for cleaner imports
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@2024/*": ["./2024/*"],
+      "@2023/*": ["./2023/*"],
+      "@scripts/*": ["./scripts/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  "exclude": ["node_modules", "dist", "build", "*.config.js"],
+  "ts-node": {
+    "esm": true
   }
 }

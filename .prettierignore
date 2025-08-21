@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Config files (optional - you might want to format these)
+*.config.js
+
+# Sample data files (preserve original formatting)
+**/dataset/*.txt
+**/sample*.txt
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
