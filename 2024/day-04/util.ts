@@ -1,41 +1,196 @@
 export type Directions = 'N' | 'S' | 'E' | 'W' | 'NE' | 'NW' | 'SE' | 'SW';
 
-type baseMap = {
+export type DiagonalDirections = 'NE' | 'NW' | 'SE' | 'SW' | 'current';
+
+export type baseMap = {
   directions: Record<Directions, boolean>;
-  amIpartOfXmas: boolean;
+  amIPartOfXmas: boolean;
+};
+export type baseDiagonalMap = {
+  directions: Record<DiagonalDirections, boolean>;
 };
 
 export const MAGIC_WORD = 'XMAS';
+export const MAGIC_WITHOUT_X_WORD = 'MAS';
 
 export const generate2DArray = (input: string): string[][] => {
   return input.split('\n').map((line) => line.split(''));
 };
 
-export const initiateXmasMap = (
-  dataArray: string[][]
-): Map<string, baseMap> => {
-  const xmasMap = new Map<string, baseMap>();
-
-  dataArray.forEach((row, rowIndex) => {
-    row.forEach((_, colIndex) => {
-      const key = `(${rowIndex},${colIndex})`;
-      xmasMap.set(key, {
-        directions: {
-          N: false,
-          S: false,
-          E: false,
-          W: false,
-          NE: false,
-          NW: false,
-          SE: false,
-          SW: false,
-        },
-        amIpartOfXmas: false,
+export function initiateXmasMap(
+  dataArray: string[][],
+  isDiagonal = false
+): Map<string, baseMap | baseDiagonalMap> {
+  if (isDiagonal) {
+    const xmasMap = new Map<string, baseDiagonalMap>();
+    dataArray.forEach((row, rowIndex) => {
+      row.forEach((_, colIndex) => {
+        const key = `(${rowIndex},${colIndex})`;
+        xmasMap.set(key, {
+          directions: {
+            NE: false,
+            NW: false,
+            SE: false,
+            SW: false,
+            current: false,
+          },
+        });
       });
     });
-  });
+    return xmasMap;
+  } else {
+    const xmasMap = new Map<string, baseMap>();
+    dataArray.forEach((row, rowIndex) => {
+      row.forEach((_, colIndex) => {
+        const key = `(${rowIndex},${colIndex})`;
+        xmasMap.set(key, {
+          directions: {
+            N: false,
+            S: false,
+            E: false,
+            W: false,
+            NE: false,
+            NW: false,
+            SE: false,
+            SW: false,
+          },
+          amIPartOfXmas: false,
+        });
+      });
+    });
+    return xmasMap;
+  }
+}
+export const exploreDiagonal = (
+  dataArray: string[][],
+  currentIndex: { i: number; j: number },
+  xmasMap: Map<string, baseDiagonalMap>
+) => {
+  const report = {
+    NE: false,
+    NW: false,
+    SE: false,
+    SW: false,
+    current: false,
+  };
+  let isNWSEHasX = false;
+  let isNESWHasX = false;
 
-  return xmasMap;
+  const { i, j } = currentIndex;
+
+  const updateXmasMap = (report: Record<DiagonalDirections, boolean>) => {
+    const key = `(${i},${j})`;
+    const entry = xmasMap.get(key);
+    if (entry) {
+      entry['directions'] = report;
+    }
+  };
+
+  //Check NW-SE & SE-NW
+  const positionNWSE = [
+    { i: i - 1, j: j - 1 }, // Northwest
+    { i, j }, // Current
+    { i: i + 1, j: j + 1 }, // Southeast
+  ];
+
+  const positionSENW = [
+    { i: i + 1, j: j + 1 }, // Southeast
+    { i, j }, // Current
+    { i: i - 1, j: j - 1 }, // Northwest
+  ];
+  const valueNWSE = positionNWSE
+    .map((pos) => dataArray[pos.i]?.[pos.j] ?? '')
+    .join('');
+  const valueSENW = positionSENW
+    .map((pos) => dataArray[pos.i]?.[pos.j] ?? '')
+    .join('');
+  if (
+    valueNWSE === MAGIC_WITHOUT_X_WORD ||
+    valueSENW === MAGIC_WITHOUT_X_WORD
+  ) {
+    // console.log(`\\: `, valueNWSE, valueSENW, { i, j });
+    isNWSEHasX = true;
+  }
+
+  // Check NE-SW & SW-NE
+  const positionNESW = [
+    { i: i - 1, j: j + 1 }, // Northeast
+    { i, j }, // Current
+    { i: i + 1, j: j - 1 }, // Southwest
+  ];
+  const positionSWNE = [
+    { i: i + 1, j: j - 1 }, // Southwest
+    { i, j }, // Current
+    { i: i - 1, j: j + 1 }, // Northeast
+  ];
+
+  const valueNESW = positionNESW
+    .map((pos) => dataArray[pos.i]?.[pos.j] ?? '')
+    .join('');
+  const valueSWNE = positionSWNE
+    .map((pos) => dataArray[pos.i]?.[pos.j] ?? '')
+    .join('');
+
+  if (
+    valueNESW === MAGIC_WITHOUT_X_WORD ||
+    valueSWNE === MAGIC_WITHOUT_X_WORD
+  ) {
+    // console.log(`/: `, valueNESW, valueSWNE, { i, j });
+    isNESWHasX = true;
+  }
+
+  if (isNESWHasX && isNWSEHasX) {
+    updateXmasMap;
+    return updateXmasMap({
+      NE: true,
+      NW: true,
+      SE: true,
+      SW: true,
+      current: true,
+    });
+  }
+
+  return updateXmasMap(report);
+};
+
+export const countXmasOccurrences = (
+  xmasMap: Map<string, baseMap | baseDiagonalMap>
+) => {
+  let count = 0;
+  xmasMap.forEach((entry) => {
+    const numDirections = Object.values(entry.directions).filter(
+      Boolean
+    ).length;
+    count += numDirections;
+  });
+  return count;
+};
+
+export const removeNoise = (
+  dataArray: string[][],
+  xmasMap: Map<string, baseMap | baseDiagonalMap>
+) => {
+  return dataArray.map((row, i) => {
+    return row.map((column, j) => {
+      const mapEntry = xmasMap.get(`(${i},${j})`);
+
+      if (mapEntry && 'amIPartOfXmas' in mapEntry) {
+        const hasXmas = mapEntry.amIPartOfXmas;
+        return hasXmas ? column : '.';
+      }
+      if (
+        mapEntry &&
+        !('amIPartOfXmas' in mapEntry) &&
+        'directions' in mapEntry
+      ) {
+        const directions = mapEntry.directions;
+        return directions.NE || directions.NW || directions.SE || directions.SW
+          ? column
+          : '.';
+      }
+      return column;
+    });
+  });
 };
 
 export const exploreDirection = (
@@ -59,7 +214,7 @@ export const exploreDirection = (
       const key = `(${i},${j})`;
       const entry = xmasMap.get(key);
       if (entry) {
-        entry.amIpartOfXmas = true;
+        entry.amIPartOfXmas = true;
       }
     });
   };
@@ -236,32 +391,4 @@ export const exploreDirection = (
   }
 
   return report;
-};
-
-export const removeNoise = (
-  dataArray: string[][],
-  xmasMap: Map<string, baseMap>
-) => {
-  return dataArray.map((row, i) => {
-    return row.map((column, j) => {
-      const mapEntry = xmasMap.get(`(${i},${j})`);
-
-      if (mapEntry) {
-        const hasXmas = mapEntry.amIpartOfXmas;
-        return hasXmas ? column : '.';
-      }
-      return column;
-    });
-  });
-};
-
-export const countXmasOccurances = (xmasMap: Map<string, baseMap>) => {
-  let count = 0;
-  xmasMap.forEach((entry) => {
-    const numDirections = Object.values(entry.directions).filter(
-      Boolean
-    ).length;
-    count += numDirections;
-  });
-  return count;
 };

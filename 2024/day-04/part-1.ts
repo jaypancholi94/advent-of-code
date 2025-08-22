@@ -1,7 +1,8 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import {
-  countXmasOccurances,
+  type baseMap,
+  countXmasOccurrences,
   type Directions,
   exploreDirection,
   generate2DArray,
@@ -12,17 +13,24 @@ import {
 
 function processInput(input: string): number {
   const dataArray = generate2DArray(input);
-  const xmasMap = initiateXmasMap(dataArray);
+  const xmasMap = initiateXmasMap(dataArray, false);
   console.table(dataArray);
   dataArray.forEach((row, i) => {
     row.forEach((column, j) => {
       if (column === 'X') {
-        const report = exploreDirection(dataArray, { i, j }, xmasMap);
+        const report = exploreDirection(
+          dataArray,
+          { i, j },
+          xmasMap as Map<string, baseMap>
+        );
         Object.entries(report).forEach(([direction, found]) => {
           if (found) {
-            const mapEntry = xmasMap.get(`(${i},${j})`);
-            if (mapEntry) {
-              mapEntry.directions[direction as Directions] = true;
+            const key = `(${i},${j})`;
+            const mapEntry = xmasMap.get(key);
+            if (mapEntry && direction in mapEntry.directions) {
+              (mapEntry.directions as Record<Directions, boolean>)[
+                direction as Directions
+              ] = true;
             }
           }
         });
@@ -30,11 +38,14 @@ function processInput(input: string): number {
     });
   });
 
-  const noiseLessArray = removeNoise(dataArray, xmasMap);
-  const xmasOccurances = countXmasOccurances(xmasMap);
+  const noiseLessArray = removeNoise(
+    dataArray,
+    xmasMap as Map<string, baseMap>
+  );
+  const xmasOccurrences = countXmasOccurrences(xmasMap);
   console.table(noiseLessArray);
 
-  return xmasOccurances;
+  return xmasOccurrences;
 }
 
 function main() {
